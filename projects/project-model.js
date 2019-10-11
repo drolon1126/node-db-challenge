@@ -3,6 +3,7 @@ const db = require('../data/dbConfig.js');
 module.exports = {
   find,
   findById,
+  findTasks,
   add,
   addTask,
   update,
@@ -26,6 +27,26 @@ function findById(id) {
     });
 }
 
+function findTasks(id){
+  return db('tasks as t')
+    .join('projects as p', 'p.id', 't.project_id')
+    .where( 'p.id', id)
+    .select('t.id','t.description as taskName', 't.notes','p.name as projectName', 'p.description as projectDesc');
+}
+
+function findTaskById(id) {
+  return db('tasks')
+    .where({ id })
+    .first()
+    .then(task=>{
+      if(!task){
+        return null;
+      } else {
+        return task;
+      }
+    });
+}
+
 function add(project) {
   return db('projects')
     .insert(project)
@@ -34,11 +55,13 @@ function add(project) {
     });
 }
 
-function addTask(task) {
+function addTask(task,id) {
+  let tD = task;
+  tD.project_id = id;
   return db('tasks')
-    .insert(task)
+    .insert(tD)
     .then(ids => {
-      return findById(ids[0]);
+      return findTaskById(ids[0]);
     });
 }
 
