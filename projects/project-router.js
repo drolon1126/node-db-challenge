@@ -1,6 +1,6 @@
 const express = require('express');
 
-const pDb = require('./project-model.js');
+const pDb = require('./project-model');
 
 const router = express.Router();
 
