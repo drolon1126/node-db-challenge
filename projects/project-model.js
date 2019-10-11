@@ -40,6 +40,8 @@ function findResources(id){
   return db('projects as p')
     .join('resource_projects as rp', 'rp.project_id', 'p.id')
     .join('resources as r', 'rp.resource_id', 'r.id')
+    .where('p.id',id)
+    .select('r.id','r.name as resourceName', 'r.description as resourceDesc','p.name as projectName');
 }
 
 function findTaskById(id) {

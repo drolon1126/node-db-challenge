@@ -24,12 +24,19 @@ router.get('/:id', (req, res) => {
         let tmp = { ...project, completed: project.completed === 1 ? true : false }
         pDb.findTasks(id)
           .then(tasks => {
-            if (tasks.length) {
-              tmp.tasks = tasks;
-              res.json(tmp);
-            } else {
-              res.json(tmp);
-            }
+            pDb.findResources(id)
+              .then(resources => {
+                if (resources.length) {
+                  tmp.resources = resources;
+                }
+                if (tasks.length) {
+                  tmp.tasks = tasks;
+                }
+                res.json(tmp);
+              })
+              .catch(err => {
+                res.status(500).json({ message: 'Failed to get resources' });
+              });
           })
           .catch(err => {
             res.status(500).json({ message: 'Failed to get tasks' });

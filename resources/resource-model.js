@@ -3,6 +3,7 @@ const db = require('../data/dbConfig.js');
 module.exports = {
   find,
   findById,
+  findProjects,
   add,
   update,
   remove,
@@ -23,6 +24,14 @@ function findById(id) {
         return resource;
       }
     });
+}
+
+function findProjects(id){
+  return db('projects as p')
+    .join('resource_projects as rp', 'rp.project_id', 'p.id')
+    .join('resources as r', 'rp.resource_id', 'r.id')
+    .where('r.id',id)
+    .select('p.id','p.name as projectName', 'p.description as projectDesc', 'p.completed', 'r.name as resourceName');
 }
 
 function add(resource) {
